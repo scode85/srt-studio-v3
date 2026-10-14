@@ -96,8 +96,8 @@ object AudioExtractor {
             codec.stop(); codec.release()
 
             val dataSize = totalSamples * 2
-            raf.seek(4);  raf.write(le32(36 + dataSize))
-            raf.seek(40); raf.write(le32(dataSize))
+            raf.seek(4);  raf.write(le32((36 + dataSize).toInt()))
+            raf.seek(40); raf.write(le32(dataSize.toInt()))
             raf.close()
 
             val durationMs = totalSamples * 1000 / srcRate
@@ -149,7 +149,7 @@ object AudioExtractor {
         val byteRate = rate * ch * 2
         raf.seek(0)
         raf.write("RIFF".toByteArray(Charsets.US_ASCII))
-        raf.write(le32(36 + dataSize))
+        raf.write(le32((36 + dataSize).toInt()))
         raf.write("WAVE".toByteArray(Charsets.US_ASCII))
         raf.write("fmt ".toByteArray(Charsets.US_ASCII))
         raf.write(le32(16))
@@ -160,7 +160,7 @@ object AudioExtractor {
         raf.write(le16(ch * 2))
         raf.write(le16(16))
         raf.write("data".toByteArray(Charsets.US_ASCII))
-        raf.write(le32(dataSize))
+        raf.write(le32(dataSize.toInt()))
     }
 
     private fun le32(v: Int) = byteArrayOf(

@@ -128,16 +128,16 @@ class MainActivity : AppCompatActivity() {
         val wav = File(cache, "audio.wav")
 
         log("1/4. Tách audio từ video...")
-        setProgress(5)
+        updateProgress(5)
         val info = AudioExtractor.extractWav(activity, uri, wav)
         if (info == null) { log("❌ Video không có track âm thanh."); finishRun(); return }
         log("   ✓ WAV ${wav.length()/1024/1024} MB, ${info.durationMs/1000}s, ${info.sampleRate} Hz")
-        setProgress(15)
+        updateProgress(15)
 
         log("2/4. Chia nhỏ audio...")
         val chunks = AudioExtractor.splitWav(wav, cache, info.sampleRate, 240)
         log("   ✓ ${chunks.size} chunk (240s/chunk)")
-        setProgress(20)
+        updateProgress(20)
 
         log("3/4. Gửi lên Groq Whisper...")
         SrtWriter.reset()
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                     Thread.sleep(3000L * retry)
                 }
             }
-            setProgress(20 + i * 70 / chunks.size)
+            updateProgress(20 + i * 70 / chunks.size)
         }
 
         log("4/4. Lưu SRT...")
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         val outDir = File(activity.getExternalFilesDir(null), "subtitles").apply { mkdirs() }
         val outFile = File(outDir, "$name.srt")
         val count = SrtWriter.save(outFile)
-        setProgress(100)
+        updateProgress(100)
         log("\n✅ Xong: $count dòng")
         log("📄 ${outFile.absolutePath}")
         ui.post {
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun log(msg: String) { ui.post { tvLog.append("\n$msg") } }
-    private fun setProgress(p: Int) { ui.post { progress.progress = p } }
+    private fun updateProgress(p: Int) { ui.post { progress.progress = p } }
     private fun finishRun() { ui.post { btnGo.isEnabled = true; btnPick.isEnabled = true } }
 
     companion object { const val REQ = 101 }
