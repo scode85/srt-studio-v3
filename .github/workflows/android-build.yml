@@ -34,12 +34,7 @@ jobs:
         run: gradle assembleDebug --stacktrace
 
       - name: Upload APK
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Show Kotlin errors
-        if: failure()
-        run: gradle assembleDebug 2>&1 | grep -E "^\s*e: |error:" | head -30 || true
